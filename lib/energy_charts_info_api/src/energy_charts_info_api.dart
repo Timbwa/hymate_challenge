@@ -44,6 +44,8 @@ class EnergyChartsInfoApi {
     required PriceRequestModel priceRequestModel,
     CancelToken? cancelToken,
   }) async {
+    _logger.d('Fetching total Price with: \n'
+        '$priceRequestModel');
     final uri = Uri.https(_host, 'price', priceRequestModel.toMap());
 
     final response = await _dio.getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
@@ -61,6 +63,8 @@ class EnergyChartsInfoApi {
     required TotalPowerRequestModel totalPowerRequestModel,
     CancelToken? cancelToken,
   }) async {
+    _logger.d('Fetching total Power with: \n'
+        '$totalPowerRequestModel');
     final uri = Uri.https(_host, 'total_power', totalPowerRequestModel.toMap());
 
     final response = await _dio.getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);

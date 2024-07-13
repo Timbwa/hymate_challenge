@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hymate_challenge/app/view/home.dart';
+import 'package:hymate_challenge/theme/theme.dart';
 
 // ignore_for_file: public_member_api_docs
 class App extends ConsumerWidget {
@@ -11,7 +12,7 @@ class App extends ConsumerWidget {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: const Color.fromARGB(255, 174, 225, 142),
+        colorSchemeSeed: AppColors.seedColor,
       ),
       home: const Home(),
     );
