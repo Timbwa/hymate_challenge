@@ -18,8 +18,6 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    print('======================= BUILDING HOME ==================');
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hymate Challenge'),
@@ -74,7 +72,6 @@ class _HomeState extends ConsumerState<Home> {
             ),
             Consumer(
               builder: (context, ref, child) {
-                // TODO determine if each production type should be plotted
                 final totalPowerProductionTypeName = ref.watch(
                   appStateNotifierProvider.select((state) {
                     return state.valueOrNull?.lines['power']?.name ?? '';
@@ -160,6 +157,13 @@ class _HomeState extends ConsumerState<Home> {
                         loading: () => const ButtonChildWidget(text: '', withIndicator: true),
                       ),
                     ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/challenge');
+                      },
+                      child: const Text('Open Challenge Page'),
+                    ),
                   ],
                 );
               },
@@ -225,7 +229,12 @@ class ButtonChildWidget extends StatelessWidget {
         Text(text),
         Visibility(
           visible: withIndicator,
-          child: const CircularProgressIndicator(),
+          child: const Padding(
+            padding: EdgeInsets.all(4),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          ),
         ),
       ],
     );

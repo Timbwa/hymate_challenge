@@ -14,16 +14,12 @@ class AppStateNotifier extends _$AppStateNotifier {
 
   @override
   FutureOr<AppState> build() async {
-    print('======================= BUILDING APP STATENOTIFIER ==================');
-
     return await _fetchPowerAndPrices(totalPowerRequestModel, priceRequestModel);
   }
 
   void updateDataPoints({required String key, required LineData dataPoints}) {
     final currentAppStateLines = state.value!.lines..addAll({key: dataPoints});
     state = AsyncData(state.value!.copyWith(lines: currentAppStateLines));
-    print('==================================');
-    print(state);
   }
 
   Future<PriceResponseModel> fetchTotalPrice(PriceRequestModel requestModel) async {
@@ -47,12 +43,10 @@ class AppStateNotifier extends _$AppStateNotifier {
   }
 
   Future<void> fetchTotalPriceAndUpdateState(PriceRequestModel priceRequestModel) async {
-    print('Before');
-    print(state.valueOrNull?.lines);
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final priceResponse = await fetchTotalPrice(priceRequestModel);
-      final currentLines = state.value!.lines;
+      final currentLines = state.value?.lines;
 
       final lines = {
         'price': LineData(
@@ -61,29 +55,26 @@ class AppStateNotifier extends _$AppStateNotifier {
           yDataPoints: priceResponse.price,
         ),
       };
-      currentLines.addAll(lines);
+      currentLines?.addAll(lines);
 
       return state.value!.copyWith(lines: currentLines);
     });
-    print('After');
-    print(state.valueOrNull?.lines);
   }
 
   Future<void> fetchTotalPowerAndUpdateState(TotalPowerRequestModel totalPowerRequestModel) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final totalPowerResponse = await fetchTotalPower(totalPowerRequestModel);
-      final currentLines = state.value!.lines;
+      final currentLines = state.value?.lines;
 
       final lines = {
-        // TODO ammend to allow multilpe production types
         'power': LineData(
           unixTimestamps: totalPowerResponse.unixSeconds,
           name: totalPowerResponse.productionTypes[_defaultProductionTypeIndex].name,
           yDataPoints: totalPowerResponse.productionTypes[_defaultProductionTypeIndex].data,
         ),
       };
-      currentLines.addAll(lines);
+      currentLines?.addAll(lines);
 
       return state.value!.copyWith(lines: currentLines);
     });
@@ -101,7 +92,6 @@ class AppStateNotifier extends _$AppStateNotifier {
         unixTimestamps: priceResponse.unixSeconds,
         yDataPoints: priceResponse.price,
       ),
-      // TODO ammend to allow multilpe production types
       'power': LineData(
         unixTimestamps: totalPowerResponse.unixSeconds,
         name: totalPowerResponse.productionTypes[_defaultProductionTypeIndex].name,
@@ -110,10 +100,5 @@ class AppStateNotifier extends _$AppStateNotifier {
     };
 
     return AppState(lines: lines);
-  }
-
-  /// reset the state to default values
-  void reset() {
-    state = AsyncData(state.value!.copyWith(lines: {}));
   }
 }

@@ -1,0 +1,61 @@
+{
+  "categories": [
+    {
+      "label": "Production",
+      "subcategories": [
+        {
+          "label": "Electrical Production",
+          "subcategories": [
+            {
+              "label": "BHKWs",
+              "data_points": [
+                {
+                  "label": "BHKW 1 electrical power",
+                  "name": "CNV_1_CHP_1_ELCPOWEROUT"
+                },
+                {
+                  "label": "BHKW 2 electrical power",
+                  "name": "CNV_2_CHP_1_ELCPOWEROUT"
+                },
+                {
+                  "label": "BHKW 3 electrical power",
+                  "name": "CNV_3_CHP_1_ELCPOWEROUT"
+                }
+              ]
+            },
+            {
+              "label": "PVs",
+              "data_points": [
+                {
+                  "label": "PV1",
+                  "name": "PRD_1_PHV_1_ELCPOWEROUT"
+                },
+                {
+                  "label": "PV2",
+                  "name": "PRD_2_PHV_1_ELCPOWEROUT"
+                },
+                {
+                  "label": "PV3",
+                  "name": "PRD_2_PHV_1_ELCPOWEROUT"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Consumption",
+          "data_points": [
+            {
+              "label": "Electrical consumption",
+              "name": "CNS_1_BSL_1_ELCPOWEROUT"
+            },
+            {
+              "label": "Thermal consumption",
+              "name": "CNS_2_BSL_1_ELCPOWEROUT"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

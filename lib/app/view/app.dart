@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hymate_challenge/app/view/home.dart';
+import 'package:hymate_challenge/app/app.dart';
+import 'package:hymate_challenge/challenge/challenge.dart';
 import 'package:hymate_challenge/theme/theme.dart';
 
 // ignore_for_file: public_member_api_docs
@@ -14,6 +15,9 @@ class App extends ConsumerWidget {
         useMaterial3: true,
         colorSchemeSeed: AppColors.seedColor,
       ),
+      routes: {
+        '/challenge': (context) => const Challenge(),
+      },
       home: const Home(),
     );
   }
