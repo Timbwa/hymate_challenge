@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:hymate_challenge/challenge/models/data_point.dart';
+import 'package:flutter/material.dart';
+import 'package:hymate_challenge/challenge/challenge.dart';
 
-class Category extends Equatable {
+class Category extends GraphDataPoint with EquatableMixin {
   Category({
     required this.label,
     this.dataPoints = const [],
@@ -31,6 +32,7 @@ class Category extends Equatable {
   final String label;
   final List<DataPoint> dataPoints;
   final List<Category> subcategories;
+  Color? color;
 
   int length({int initialSum = 0}) {
     if (dataPoints.isNotEmpty) {
@@ -46,8 +48,22 @@ class Category extends Equatable {
     return currentSum;
   }
 
+  List<DataPoint> getAllChildDataPoints() {
+    if (dataPoints.isNotEmpty) {
+      return dataPoints;
+    }
+
+    final currentDataPoints = <DataPoint>[];
+
+    for (final category in subcategories) {
+      currentDataPoints.addAll(category.getAllChildDataPoints());
+    }
+
+    return currentDataPoints;
+  }
+
   @override
-  List<Object?> get props => [dataPoints, subcategories];
+  List<Object?> get props => [label, dataPoints, subcategories, color];
 
   @override
   String toString() {

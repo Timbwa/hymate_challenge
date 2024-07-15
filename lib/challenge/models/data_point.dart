@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:hymate_challenge/challenge/challenge.dart';
 
-class DataPoint extends Equatable {
-  const DataPoint({
+class DataPoint extends GraphDataPoint with EquatableMixin {
+  DataPoint({
     required this.name,
     required this.label,
   });
@@ -15,14 +17,8 @@ class DataPoint extends Equatable {
 
   final String name;
   final String label;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'label': label,
-    };
-  }
+  Color? color;
 
   @override
-  List<Object?> get props => [name, label];
+  List<Object?> get props => [name, label, color];
 }

@@ -4,14 +4,14 @@ import 'package:hymate_challenge/app/provider/provider.dart';
 import 'package:hymate_challenge/app/widgets/widgets.dart';
 import 'package:hymate_challenge/energy_charts_info_api/energy_charts_info_api.dart';
 
-class Home extends ConsumerStatefulWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  ConsumerState<Home> createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends ConsumerState<Home> {
+class _HomeState extends State<Home> {
   DateTime? _endDateTime;
   DateTime? _startDateTime;
   BiddingZone _selectedBiddingZone = BiddingZone.germanyLuxembourg;
@@ -25,8 +25,6 @@ class _HomeState extends ConsumerState<Home> {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: ListView(
-          // mainAxisSize: MainAxisSize.min,
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 50),
             ChartWidget(),
@@ -133,10 +131,22 @@ class _HomeState extends ConsumerState<Home> {
                 final startDate = _startDateTime?.unixTimeStampInSeconds.toString();
                 final endDate = _endDateTime?.unixTimeStampInSeconds.toString();
                 final appState = ref.watch(appStateNotifierProvider);
+                ref.listen(appStateNotifierProvider, (prev, next) {
+                  if (next.hasError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Something went wrong. Try changing dates or country'),
+                      ),
+                    );
+                  }
+                });
 
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                return Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.end,
+                  spacing: 20,
+                  runSpacing: 16,
                   children: [
                     ElevatedButton(
                       onPressed: appState.maybeWhen(
@@ -154,10 +164,18 @@ class _HomeState extends ConsumerState<Home> {
                       child: appState.maybeWhen(
                         skipLoadingOnRefresh: false,
                         orElse: () => const ButtonChildWidget(text: 'Fetch Data'),
-                        loading: () => const ButtonChildWidget(text: '', withIndicator: true),
+                        loading: () => const ButtonChildWidget(text: '', isLoading: true),
                       ),
                     ),
-                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _startDateTime = null;
+                          _endDateTime = null;
+                        });
+                      },
+                      child: const Text('Clear Dates'),
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pushNamed('/challenge');
@@ -182,11 +200,13 @@ class _HomeState extends ConsumerState<Home> {
   }
 
   Future<void> _selectDateTime(BuildContext context, bool isStartDate) async {
+    final firstDate = isStartDate ? DateTime(2015) : _startDateTime ?? DateTime(2015);
+
     await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2015),
-      lastDate: DateTime(2025),
+      firstDate: firstDate,
+      lastDate: DateTime.now(),
     ).then((pickedDate) async {
       if (pickedDate != null) {
         final pickedTime = await showTimePicker(
@@ -198,8 +218,8 @@ class _HomeState extends ConsumerState<Home> {
             pickedDate.year,
             pickedDate.month,
             pickedDate.day,
-            // pickedTime.hour,
-            // pickedTime.minute,
+            pickedTime.hour,
+            pickedTime.minute,
           );
           if (isStartDate) {
             setState(() {
@@ -217,26 +237,20 @@ class _HomeState extends ConsumerState<Home> {
 }
 
 class ButtonChildWidget extends StatelessWidget {
-  const ButtonChildWidget({required this.text, this.withIndicator = false, super.key});
+  const ButtonChildWidget({required this.text, this.isLoading = false, super.key});
 
   final String text;
-  final bool withIndicator;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(text),
-        Visibility(
-          visible: withIndicator,
-          child: const Padding(
+    return isLoading
+        ? const Padding(
             padding: EdgeInsets.all(4),
             child: CircularProgressIndicator(
               strokeWidth: 2,
             ),
-          ),
-        ),
-      ],
-    );
+          )
+        : Text(text);
   }
 }

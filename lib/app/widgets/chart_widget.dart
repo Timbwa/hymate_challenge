@@ -92,7 +92,13 @@ class ChartWidget extends ConsumerWidget {
         final index = flSpotIndexedValue.index;
         final flSpot = flSpotIndexedValue.value;
         flSpotList[index] = flSpot.copyWith(
-          x: normalize(flSpot.x, minTimeStamp, maxTimeStamp, 0, 24),
+          x: normalize(
+            flSpot.x,
+            minTimeStamp,
+            maxTimeStamp,
+            _minTimeHour.toDouble(),
+            _maxTimeHour.toDouble(),
+          ),
         );
       }
     }

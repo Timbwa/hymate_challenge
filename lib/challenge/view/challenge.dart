@@ -32,6 +32,15 @@ class _ChallengeState extends State<Challenge> {
     return List.generate(length, (index) => generateColor());
   }
 
+  /// Randomly generates a colors list for Categories and DataPoints with length = no of categories + no of dataPoints
+  void _updateCategoryAndDataPointColors() {
+    setState(() {
+      _categoryAndDatapointColors = _generateRandomColors(
+        _categories.fold(0, (sum, category) => sum + category.length(initialSum: 1)),
+      );
+    });
+  }
+
   Future<void> _parseDataPointsJson() async {
     await rootBundle.loadString('assets/data_points.json').then((dataPointsJsonString) {
       final categoriesJson = jsonDecode(dataPointsJsonString) as Map<String, dynamic>;
@@ -40,11 +49,60 @@ class _ChallengeState extends State<Challenge> {
           .toList();
 
       setState(() {
+        _selectedCategories.clear();
+        _selectedDataPoints.clear();
+
         _categories
           ..clear()
           ..addAll(categories);
       });
     });
+  }
+
+  Plot _createPlot({
+    required int id,
+    required String name,
+    required List<Category> selectedCategories,
+    required List<DataPoint> selectedDataPoints,
+  }) {
+    final primaryYAxisGraphs = <Graph>[];
+
+    // Create Graphs for each selected Category
+    for (final category in selectedCategories) {
+      primaryYAxisGraphs.add(
+        Graph(
+          id: primaryYAxisGraphs.length,
+          name: category.label,
+          dataPoints: [category],
+        ),
+      );
+    }
+
+    // Create a Graph for selected DataPoints
+    if (selectedDataPoints.isNotEmpty) {
+      primaryYAxisGraphs.add(Graph(
+        id: primaryYAxisGraphs.length,
+        name: 'Selected DataPoints',
+        dataPoints: selectedDataPoints,
+      ));
+    }
+
+    return Plot(
+      id: id,
+      name: name,
+      primaryYAxisGraphs: primaryYAxisGraphs,
+    );
+  }
+
+  void _createPlotAndPrintToConsole() {
+    final plot = _createPlot(
+      id: 0,
+      name: 'Sample Plot',
+      selectedCategories: _selectedCategories,
+      selectedDataPoints: _selectedDataPoints,
+    );
+
+    print(plot.prettyJson());
   }
 
   @override
@@ -69,11 +127,13 @@ class _ChallengeState extends State<Challenge> {
                       setState(() {
                         _selectedCategories = [...selectedCategories];
                       });
+                      _createPlotAndPrintToConsole();
                     },
                     onDataPointSelectionChanged: (selectedDataPoints) {
                       setState(() {
                         _selectedDataPoints = [...selectedDataPoints];
                       });
+                      _createPlotAndPrintToConsole();
                     },
                   );
                 },
@@ -86,20 +146,14 @@ class _ChallengeState extends State<Challenge> {
                   ElevatedButton(
                     onPressed: () async {
                       await _parseDataPointsJson().then((_) {
-                        setState(() {
-                          _categoryAndDatapointColors = _generateRandomColors(
-                            _categories.fold(0, (sum, category) => sum + category.length(initialSum: 1)),
-                          );
-                        });
+                        _updateCategoryAndDataPointColors();
                       });
                     },
                     child: const Text('Parse json and create hierarchy'),
                   ),
                   const SizedBox(width: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      // TODO: Implement mapping to plot and graph objects
-                    },
+                    onPressed: _createPlotAndPrintToConsole,
                     child: const Text('Print selection'),
                   ),
                 ],

@@ -27,7 +27,7 @@ class CategoryWidget extends StatefulWidget {
 }
 
 class _CategoryWidgetState extends State<CategoryWidget> {
-  bool _isExpanded = false;
+  bool _isExpanded = true;
   final _random = Random();
   late Color _categoryColor;
   final List<Color> _dataPointColors = [];
@@ -37,6 +37,8 @@ class _CategoryWidgetState extends State<CategoryWidget> {
     super.initState();
     final categoryColorIndex = _random.nextInt(widget.availableColors.length);
     _categoryColor = widget.availableColors[categoryColorIndex];
+
+    widget.category.color = _categoryColor;
 
     for (final _ in widget.category.dataPoints) {
       _dataPointColors.add(widget.availableColors[_random.nextInt(widget.availableColors.length)]);
@@ -126,19 +128,20 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                 ),
                 ...enumerate(category.dataPoints).map(
                   (dataPoint) {
+                    final dataPointColor = _dataPointColors[dataPoint.index];
+                    dataPoint.value.color = dataPointColor;
+
                     return ListTile(
                       leading: InkWell(
                         onTap: () => _toggleDataPointSelection(dataPoint.value),
                         child: Icon(
                           size: 16,
                           _isDataPointSelected(dataPoint.value) ? Icons.circle : Icons.circle_outlined,
-                          color: _isDataPointSelected(dataPoint.value)
-                              ? _dataPointColors[dataPoint.index]
-                              : listTileIconAndTextColor,
+                          color: _isDataPointSelected(dataPoint.value) ? dataPointColor : listTileIconAndTextColor,
                         ),
                       ),
                       title: Text(
-                        dataPoint.value.label ?? '',
+                        dataPoint.value.label,
                         style: textStyle,
                       ),
                     );
