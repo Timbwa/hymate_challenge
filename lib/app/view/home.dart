@@ -14,6 +14,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   DateTime? _endDateTime;
   DateTime? _startDateTime;
+
+  /// Default Bidding Zone
   BiddingZone _selectedBiddingZone = BiddingZone.germanyLuxembourg;
 
   @override

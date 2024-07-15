@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:hymate_challenge/challenge/models/models.dart';
 import 'package:quiver/iterables.dart';
 
+/// {@template category_widget}
+/// Recursively constructs [Category] tiles and [DataPoint]s
+/// {@endtemplate}
 class CategoryWidget extends StatefulWidget {
+  /// {@macro category_widget]}
   const CategoryWidget({
     required this.category,
     required this.selectedCategories,

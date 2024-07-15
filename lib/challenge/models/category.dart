@@ -2,7 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hymate_challenge/challenge/challenge.dart';
 
+/// {@template category}
+/// Category with recursive [subcategories]
+/// Should not have both [subcategories] and [dataPoints] as leaves. i.e they exist in the object exclusively
+/// {@endtemplate}
 class Category extends GraphDataPoint with EquatableMixin {
+  /// {@macro category}
   Category({
     required this.label,
     this.dataPoints = const [],
@@ -34,6 +39,8 @@ class Category extends GraphDataPoint with EquatableMixin {
   final List<Category> subcategories;
   Color? color;
 
+  /// Returns the total number of [subcategories] and [dataPoints]
+  /// Can modify [initialSum] to 1 to not count the current object
   int length({int initialSum = 0}) {
     if (dataPoints.isNotEmpty) {
       return dataPoints.length;

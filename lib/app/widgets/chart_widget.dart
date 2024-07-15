@@ -12,9 +12,12 @@ class ChartWidget extends ConsumerWidget {
 
   static const int _minTimeHour = 0;
   static const int _maxTimeHour = 24;
+
+  /// List of Lines to plot
   final List<List<FlSpot>> _flSpots = [];
   static const TextStyle _titleTextStyle = TextStyle(color: AppColors.seedColor);
 
+  /// Returns Widget that displays the hours of the day as Text
   Widget _bottomTitlesWidget(double xValue, TitleMeta meta) {
     final text = xValue.toInt() == _minTimeHour || xValue.toInt() == _maxTimeHour ? '' : '${xValue.toInt()}:00';
 
@@ -36,7 +39,10 @@ class ChartWidget extends ConsumerWidget {
           reservedSize: 40,
           interval: 50,
           getTitlesWidget: (yValue, meta) {
-            return yValue != meta.max ? Text(meta.formattedValue, style: _titleTextStyle) : const Text('');
+            /// Don't show the the values at the boundaries
+            return yValue != meta.max && yValue != meta.min
+                ? Text(meta.formattedValue, style: _titleTextStyle)
+                : const Text('');
           },
         ),
       ),
@@ -51,6 +57,7 @@ class ChartWidget extends ConsumerWidget {
     );
   }
 
+  /// [FlLine] that distinguishes the 0 axis horizontally
   FlLine _getHorizontalVerticalLine(double value) {
     if ((value - 0).abs() <= 0.1) {
       return const FlLine(
@@ -73,7 +80,7 @@ class ChartWidget extends ConsumerWidget {
 
   /// Normalize [value] from it's domain ([inputMin], [inputMax]) - inclusive
   /// to a target domain ([targetMin], [targetMax])
-  double normalize(double value, double inputMin, double inputMax, double targetMin, double targetMax) {
+  double _normalize(double value, double inputMin, double inputMax, double targetMin, double targetMax) {
     assert(inputMin != inputMax, "The input maximum and minimum can't be the same. Potential division by zero!");
 
     // Normalize to [0, 1]
@@ -83,7 +90,8 @@ class ChartWidget extends ConsumerWidget {
     return targetMin + normalized * (targetMax - targetMin);
   }
 
-  void normalizeFlSpotTimeStamps() {
+  /// Normalizes unixTimeStamps to 24 hour range with 1-hour interval [0, 24]
+  void _normalizeFlSpotTimeStamps() {
     final minTimeStamp = min(_flSpots.expand((spots) => spots).toList(), (a, b) => a.x.compareTo(b.x))!.x;
     final maxTimeStamp = max(_flSpots.expand((spots) => spots).toList(), (a, b) => a.x.compareTo(b.x))!.x;
 
@@ -92,7 +100,7 @@ class ChartWidget extends ConsumerWidget {
         final index = flSpotIndexedValue.index;
         final flSpot = flSpotIndexedValue.value;
         flSpotList[index] = flSpot.copyWith(
-          x: normalize(
+          x: _normalize(
             flSpot.x,
             minTimeStamp,
             maxTimeStamp,
@@ -104,7 +112,7 @@ class ChartWidget extends ConsumerWidget {
     }
   }
 
-  void convertMapOfLineDataToListOfFlSpots(Map<String, LineData> lines) {
+  void _convertMapOfLineDataToListOfFlSpots(Map<String, LineData> lines) {
     _flSpots.clear();
     for (final line in lines.values) {
       final flSpots = zip([line.unixTimestamps, line.yDataPoints])
@@ -119,8 +127,8 @@ class ChartWidget extends ConsumerWidget {
     ref.watch(appStateNotifierProvider).maybeWhen(
           orElse: () {},
           data: (appState) {
-            convertMapOfLineDataToListOfFlSpots(appState.lines);
-            normalizeFlSpotTimeStamps();
+            _convertMapOfLineDataToListOfFlSpots(appState.lines);
+            _normalizeFlSpotTimeStamps();
           },
         );
 

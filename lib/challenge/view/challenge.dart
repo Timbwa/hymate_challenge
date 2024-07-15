@@ -15,6 +15,7 @@ class Challenge extends StatefulWidget {
 
 class _ChallengeState extends State<Challenge> {
   final random = Random(777);
+
   final List<Category> _categories = [];
   List<Category> _selectedCategories = [];
   List<DataPoint> _selectedDataPoints = [];
@@ -112,8 +113,10 @@ class _ChallengeState extends State<Challenge> {
         title: const Text('Challenge'),
       ),
       body: Center(
-        child: Container(
-          color: AppColors.graphBackgroundColor,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            color: AppColors.graphBackgroundColor,
+          ),
           child: ListView(
             children: [
               ..._categories.map(

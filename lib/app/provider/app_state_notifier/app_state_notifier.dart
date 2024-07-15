@@ -17,11 +17,6 @@ class AppStateNotifier extends _$AppStateNotifier {
     return await _fetchPowerAndPrices(totalPowerRequestModel, priceRequestModel);
   }
 
-  void updateDataPoints({required String key, required LineData dataPoints}) {
-    final currentAppStateLines = state.value!.lines..addAll({key: dataPoints});
-    state = AsyncData(state.value!.copyWith(lines: currentAppStateLines));
-  }
-
   Future<PriceResponseModel> fetchTotalPrice(PriceRequestModel requestModel) async {
     final cancelToken = ref.cancelToken();
 
