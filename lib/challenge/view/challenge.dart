@@ -33,7 +33,7 @@ class _ChallengeState extends State<Challenge> {
     return List.generate(length, (index) => generateColor());
   }
 
-  /// Randomly generates a colors list for Categories and DataPoints with length = no of categories + no of dataPoints
+  /// Randomly generates a list of Colors for Categories and DataPoints with length = no of categories + no of dataPoints
   void _updateCategoryAndDataPointColors() {
     setState(() {
       _categoryAndDatapointColors = _generateRandomColors(

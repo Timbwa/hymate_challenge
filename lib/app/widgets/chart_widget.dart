@@ -90,7 +90,7 @@ class ChartWidget extends ConsumerWidget {
     return targetMin + normalized * (targetMax - targetMin);
   }
 
-  /// Normalizes unixTimeStamps to 24 hour range with 1-hour interval [0, 24]
+  /// Normalizes unixTimeStamps to 24 hour range [0, 24]
   void _normalizeFlSpotTimeStamps() {
     final minTimeStamp = min(_flSpots.expand((spots) => spots).toList(), (a, b) => a.x.compareTo(b.x))!.x;
     final maxTimeStamp = max(_flSpots.expand((spots) => spots).toList(), (a, b) => a.x.compareTo(b.x))!.x;

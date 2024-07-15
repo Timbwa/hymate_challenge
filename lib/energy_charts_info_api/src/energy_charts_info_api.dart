@@ -14,20 +14,7 @@ EnergyChartsInfoApi energyChartsInfoApi(EnergyChartsInfoApiRef ref) => EnergyCha
 /// {@endtemplate}
 class EnergyChartsInfoApi {
   /// {@macro energy_charts_info_api}
-  EnergyChartsInfoApi() {
-/*
-    _dio.interceptors.add(
-      LogInterceptor(
-        logPrint: _logger.d,
-        request: false,
-        requestBody: true,
-        requestHeader: false,
-        responseBody: true,
-        responseHeader: false,
-      ),
-    );
-*/
-  }
+  EnergyChartsInfoApi();
 
   static const String _host = 'api.energy-charts.info';
 
